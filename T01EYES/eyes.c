@@ -78,6 +78,42 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   return 30;
 } /* End of 'WinMain' function */
 
+
+/* Рисование глаз.
+ * АРГУМЕНТЫ:
+ *   - дескриптор контекста рисования:
+ *       HDC hDC;
+ *   - размеры окна:
+ *       INT W, H;
+ *   - позиция мыши:
+ *       INT Xc, Yc;
+ * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ: Нет.
+ */
+VOID DrawEye( HDC hDC, INT W, INT H, INT Xc, INT Yc )
+{
+  FLOAT
+    len = sqrt(sqr(Xc - W / 2) + sqr(Yc - H / 2)),
+    co = (Xc - W / 2) / len, si = (Yc - H / 2) / len;
+  INT l = 30, x = W / 2 + co * l, y = H / 2 + si * l;
+
+  l = len;
+  if (l > W / 2 - W / 8)
+    l = W / 2 - W / 8;
+  x = W / 2 + co * l;
+  y = H / 2 + si * l;
+
+
+  SelectObject(hDC, GetStockObject(DC_PEN));
+  SelectObject(hDC, GetStockObject(DC_BRUSH));
+  SetDCPenColor(hDC, RGB(0, 0, 0));
+  SetDCBrushColor(hDC, RGB(255, 255, 255));
+  Ellipse(hDC, 0, 0, W, H);
+  SetDCPenColor(hDC, RGB(0, 0, 0));
+  SetDCBrushColor(hDC, RGB(2, 55, 5));
+  Ellipse(hDC, x - W / 8, y - H / 8, x + W / 8, y + H / 8);
+
+} /* End of 'DrawEye' function */
+
 /* Функция обработки сообщения окна.
  * АРГУМЕНТЫ:
  *   - дескриптор окна:
@@ -109,13 +145,15 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     return 0;
   case WM_TIMER:
     hDC = GetDC(hWnd);
-    Rectangle(hDC, 0, 0, w, h) ;
-    Ellipse(hDC, w / 2 + 50, 50 , w - 50, h - 50);
+    SelectObject(hDc, GetStockObject(DC_BRUSH));
+    SetDCBrushColor(hDc, RGB(255, 0, 0));
+    Rectangle(hDC, 0, 0, w, h);
+   // Ellipse(hDC, w / 2 + 50, 50 , w - 50, h - 50);
     Ellipse(hDC, 50, 50, w / 2 - 50, h - 50);
     GetCursorPos(&pt);
     ScreenToClient(hWnd, &pt);
     
-    Ellipse(hDC, , , , );
+   // Ellipse(hDC, , , , );
    
     ReleaseDC(hWnd, hDC);
     return 0;
