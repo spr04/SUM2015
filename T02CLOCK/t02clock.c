@@ -93,11 +93,34 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 /* Стрелки часов двигаются и рисуются */
-VOID DrawArrow(  HDC hDC, INT X1, INT Y1, INT Len, DOUBLE Angle )
+/*VOID DrawArrow(  HDC hDC, INT X1, INT Y1, INT Len, DOUBLE Angle )
 {
   DOUBLE si = sin(Angle * PI / 180), co = cos(Angle * PI / 180);
   MoveToEx(hDC, X1, Y1, NULL);
   LineTo(hDC, X1 + Len * si, Y1 - Len * co);
+
+}/* End of 'DrawArrow' function */
+
+/* Стрелки часов двигаются и рисуются */
+VOID DrawHand(  HDC hDC, INT X1, INT Y1, INT L, INT W, FLOAT Angle )
+{
+  INT i;
+  //DOUBLE si = sin(Angle * PI / 180), co = cos(Angle * PI / 180);
+  POINT pnts[]=
+  {
+    {X1, -W}, {-W, Y1}, {X1, L}, {W, Y1}
+  }, pntdraw[sizeof pnts / sizeof pnts[0]];
+
+  for (i = 0; i < sizeof pnts / sizeof pnts[0]; i++)
+  {
+    pntdraw[i].x = pnts[i].x * cos(Angle) - pnts[i].y * sin(Angle);
+    pntdraw[i].y = pnts[i].x * sin(Angle) + pnts[i].y * cos(Angle);
+  }
+  Polygon(hDC, pnts, 4);
+
+ /* DOUBLE si = sin(Angle * PI / 180), co = cos(Angle * PI / 180);
+  MoveToEx(hDC, X1, Y1, NULL);
+  LineTo(hDC, X1 + Len * si, Y1 - Len * co);  */
 
 }/* End of 'DrawArrow' function */
 
@@ -178,14 +201,6 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
       hMemDCLogo, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
 
     GetLocalTime(&st);
-        /* Draw picture 
-    x = w / 2 + 300 * sin(clock() / 1000.0);
-    GetCursorPos(&pt);
-    ScreenToClient(hWnd, &pt); */
-    
-    
-/*    Ellipse(hDC, 10, 10, w - 10, h - 10);
-    Ellipse(hDC, 10 + x, h / 2 - 10, x - 10, h / 2 + 10);  */
     
 
     hFnt = CreateFont(50, 0, 0, 0, FW_BOLD, FALSE, FALSE,
@@ -215,9 +230,9 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
 
     SelectObject(hMemDC, GetStockObject(DC_PEN));
     SelectObject(hMemDC, GetStockObject(DC_BRUSH));
-    DrawArrow(hMemDC, w / 2, h / 2 - 50, 250, st.wSecond * 6);
-    DrawArrow(hMemDC, w / 2, h / 2 - 50, 200, st.wMinute * 6);
-    DrawArrow(hMemDC, w / 2, h / 2 - 50, 120, (st.wHour % 12) * 30);
+    DrawHand(hMemDC, w / 2, h / 2 - 50, 200, 30, (st.wSecond * 6) * PI / 180 );
+    /*DrawArrow(hMemDC, w / 2, h / 2 - 50, 200, st.wMinute * 6);
+    DrawArrow(hMemDC, w / 2, h / 2 - 50, 120, (st.wHour % 12) * 30); */
     
 
     InvalidateRect(hWnd, NULL, TRUE);
@@ -234,10 +249,6 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
 
     x = LOWORD(lParam);
     y = HIWORD(lParam);
-   /* SelectObject(hMemDC, GetStockObject(DC_PEN));
-    SetDCPenColor(hMemDC, RGB(255, 0, 0));
-    MoveToEx(hMemDC, w / 2, h / 2, NULL);
-    LineTo(hMemDC, x, y);*/
     return 0;
 
   case WM_LBUTTONUP:
@@ -247,14 +258,6 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
   case WM_MOUSEMOVE:
     x = (SHORT)LOWORD(lParam);
     y = (SHORT)HIWORD(lParam);
-    /*if (wParam & MK_LBUTTON)
-    {
-      Ellipse(hMemDC, x - 5, y - 5, x + 5, y + 5);
-    } 
-    SelectObject(hMemDC, GetStockObject(DC_PEN));
-    SetDCPenColor(hMemDC, RGB(255, 0, 0));
-    MoveToEx(hMemDC, w / 2, h / 2, NULL);
-    LineTo(hMemDC, x, y); */
     return 0;
 
   case WM_ERASEBKGND:
