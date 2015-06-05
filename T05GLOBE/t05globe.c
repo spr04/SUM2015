@@ -15,6 +15,7 @@
 #include <windows.h>
 
 #include "GLOBE.H"
+#include "image.h"
 
 /* Имя класса окна */
 #define WND_CLASS_NAME "My window class"
@@ -117,10 +118,13 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
   static HBITMAP hBm, hBmLogo;
   static HDC hMemDC, hMemDCLogo;
   static INT w, h;
+ 
 
   switch (Msg)
   {
   case WM_CREATE:
+    //if (GlobeImage.hBm == NULL)
+    ImageLoad(&GlobeImage, "globe1.bmp");  
     cs = (CREATESTRUCT *)lParam;
     SetTimer(hWnd, 111, 50, NULL);
 
@@ -129,9 +133,6 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     hMemDC = CreateCompatibleDC(hDC);
     hMemDCLogo = CreateCompatibleDC(hDC);
     ReleaseDC(hWnd, hDC);
-
-    SelectObject(hMemDCLogo, hBmLogo);
-    SetPixel(hMemDCLogo, 10, 10, RGB(255, 0, 0));
     return 0;
 
   case WM_SIZE:
@@ -145,7 +146,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     hDC = GetDC(hWnd);
     hBm = CreateCompatibleBitmap(hDC, w, h);
     ReleaseDC(hWnd, hDC);
-
+                      
     SelectObject(hMemDC, hBm);
     SendMessage(hWnd, WM_TIMER, 111, 0);
     return 0;
@@ -154,12 +155,15 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     /* Clear Background */
     SelectObject(hMemDC, GetStockObject(NULL_PEN));
     SelectObject(hMemDC, GetStockObject(DC_BRUSH));
-    SetDCBrushColor(hMemDC, RGB(255, 225, 225));
+    SetDCBrushColor(hMemDC, RGB(255, 225, 225));    
     Rectangle(hMemDC, 0, 0, w + 1, h + 1);
 
-    SelectObject(hMemDC, GetStockObject(NULL_PEN));
+    StretchBlt(hMemDC, 0, 0, w, h - 100,
+      hMemDCLogo, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
+    
+   /* SelectObject(hMemDC, GetStockObject(NULL_PEN));
     SelectObject(hMemDC, GetStockObject(DC_BRUSH));
-    SetDCBrushColor(hMemDC, RGB(255, 0, 0));
+    SetDCBrushColor(hDC, ImageGetP(&GlobalImage, h, w);  */
     GlobeBuild();
     GlobeDraw(hMemDC, h, w);
 

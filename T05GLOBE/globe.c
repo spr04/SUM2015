@@ -1,4 +1,5 @@
 #include "GLOBE.H"
+#include "image.h"
 
 /* Функция поворота точки вокруг оси X */
 VEC RotateX( VEC P, DOUBLE AngleDegree )
@@ -36,15 +37,15 @@ VEC VecSubVec( VEC A, VEC B )
 
 VOID DrawQuad( HDC hDC, VEC P0, VEC P1, VEC P2, VEC P3, INT W, INT H )
 {
-  VEC Norm = VecCrossVec(VecSubVec(P3, P0), VecSubVec(P1, P0)); 
+  /*VEC Norm = VecCrossVec(VecSubVec(P3, P0), VecSubVec(P1, P0)); */
   POINT pnts[4];
 
- /* back-face culling */
+ /* back-face culling *
   if (Norm.Z > 0)
     return; 
 
   if(P3.X == P0.X && P3.Y == P0.Y  && P3.Z == P0.Z)
-    Norm = VecCrossVec(VecSubVec(P2, P0), VecSubVec(P1, P0));
+    Norm = VecCrossVec(VecSubVec(P2, P0), VecSubVec(P1, P0));*/
 
   pnts[0].x = P0.X + W / 2;
   pnts[0].y = -P0.Y + H / 2;
@@ -58,6 +59,11 @@ VOID DrawQuad( HDC hDC, VEC P0, VEC P1, VEC P2, VEC P3, INT W, INT H )
   pnts[3].x = P3.X + W / 2;
   pnts[3].y = -P3.Y + H / 2;
 
+  if ((pnts[0].x - pnts[1].x) * (pnts[0].y + pnts[1].y) +
+    (pnts[1].x - pnts[2].x) * (pnts[1].y + pnts[2].y) +
+    (pnts[2].x - pnts[3].x) * (pnts[2].y + pnts[3].y) +
+    (pnts[3].x - pnts[0].x) * (pnts[3].y + pnts[0].y) < 0)
+  return;
 
   Polygon(hDC, pnts, 4);
 } /* End of 'DrawQuad' function */
@@ -78,7 +84,7 @@ VOID GlobeBuild( VOID )
       Grid[i][j].Y = 0.888 * R * cos(theta);
       Grid[i][j].Z = R * sin(theta) * cos(phi);
       
-      Grid[i][j] = RotateX(Grid[i][j], 30);
+      Grid[i][j] = RotateX(Grid[i][j], -30);
     }
   }
 }
@@ -86,7 +92,7 @@ VOID GlobeBuild( VOID )
 /* Function that make sphere */
 VOID GlobeDraw( HDC hDC, INT W, INT H )
 {    
-  INT i, j;
+  INT i, j, X, Y;
 
   srand(30);
   for (i = 0; i < N; i++)
@@ -95,9 +101,12 @@ VOID GlobeDraw( HDC hDC, INT W, INT H )
     {
       SelectObject(hDC, GetStockObject(NULL_PEN));
       SelectObject(hDC, GetStockObject(DC_BRUSH));
-      SetDCBrushColor(hDC, RGB(rand() & 255, rand() & 255, rand() & 255));
-      if (Grid[i][j].Z > 0)
-        DrawQuad(hDC, Grid[i][j], Grid[i+1][j], Grid[i+1][j+1], Grid[i][j+1], W, H);
+
+      X = j * GlobeImage.W / (M - 1);
+      Y =  i * GlobeImage.H / (N - 1);
+      SetDCBrushColor(hDC, ImageGetP(&GlobeImage, X, Y));
+      
+      DrawQuad(hDC, Grid[i][j], Grid[i+1][j], Grid[i+1][j+1], Grid[i][j+1], W, H);
     }
   }
 }

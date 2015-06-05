@@ -9,8 +9,8 @@
 #include <windows.h>
 
 #define PI 3.1415926535897932384
-#define N 30
-#define M 30
+#define N 130
+#define M 130
 
 /* Тип хранения координат точки в пространстве */
 typedef struct
