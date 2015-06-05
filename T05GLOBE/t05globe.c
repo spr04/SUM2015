@@ -1,6 +1,7 @@
 /* FILE NAME: T02CLOCK.C
  * PROGRAMMER: Anya Mitina
  * DATE: 04.06.2015
+ * LAST UPDATE: 05.06.2015
  * PURPOSE: making sphere and earth.
  */
 
@@ -13,9 +14,11 @@
 
 #include <windows.h>
 
+#include "GLOBE.H"
+
 /* Имя класса окна */
 #define WND_CLASS_NAME "My window class"
-#define PI 3.1415926535897932384
+
 
 /* Ссылка вперед */
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
@@ -92,48 +95,6 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 } /* End of 'WinMain' function */
 
 
-/* Function that make sphere */
-VOID Sphere( HDC hDC, INT R/*, INT X1, INT Y1, INT Z1*/ )
-{    
-  INT x, y, z;
-  INT A;                     
-  //DOUBLE si = sin(Angle * PI / 180), co = cos(Angle * PI / 180);
-  POINT pnts[]=
-  {
-    {X1, -W}, {-W, Y1}, {X1, L}, {W, Y1}
-  }, pntdraw[sizeof pnts / sizeof pnts[0]];
-
-  for (i = 0; i < sizeof pnts / sizeof pnts[0]; i++)
-  {
-    pntdraw[i].x = pnts[i].x * cos(Angle) - pnts[i].y * sin(Angle);
-    pntdraw[i].y = pnts[i].x * sin(Angle) + pnts[i].y * cos(Angle);
-  }
-  Polygon(hDC, pnts, 4);
- 
-  
-  for (i = 0; i < 360; i++)
-    for (j = 0; j < 180; j++)
-    { 
-      DOUBLE si1 = sin(i * PI / 180), si2 = sin(j * PI / 180), co1 = cos(i * PI / 180), co2 = cos(j * PI / 180);
-      x = R * si1 * co2;
-      y = R * si1 * si2;
-      z = R * co1;
-
-      POINT pnts[]=
-      {
-        {x, y}, {x, }, {i+1, j+1}, {i+1, j}
-      }, pntdraw[sizeof pnts / sizeof pnts[0]];
-
-      /*for (i = 0; i < sizeof pnts / sizeof pnts[0]; i++)
-      {
-        pntdraw[i].x = pnts[i].x * cos(Angle) - pnts[i].y * sin(Angle);
-        pntdraw[i].y = pnts[i].x * sin(Angle) + pnts[i].y * cos(Angle);
-      }   */
-      Polygon(hDC, pnts, 4);
-    }
-}
-/* End of 'Sphere' function */
-
 /* Функция обработки сообщения окна.
  * АРГУМЕНТЫ:
  *   - дескриптор окна:
@@ -151,12 +112,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
                                WPARAM wParam, LPARAM lParam )
 {
   HDC hDC;
-  INT x, y;
   CREATESTRUCT *cs;
-  //POINT pt;
- // PAINTSTRUCT ps;
-  SYSTEMTIME st;
- // RECT rc;
   static BITMAP bm;
   static HBITMAP hBm, hBmLogo;
   static HDC hMemDC, hMemDCLogo;
@@ -167,9 +123,6 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
   case WM_CREATE:
     cs = (CREATESTRUCT *)lParam;
     SetTimer(hWnd, 111, 50, NULL);
-
-    hBmLogo = LoadImage(NULL, "clock.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-    GetObject(hBmLogo, sizeof(bm), &bm);
 
     /* создаем контекст в памяти */
     hDC = GetDC(hWnd);
@@ -204,15 +157,11 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     SetDCBrushColor(hMemDC, RGB(255, 225, 225));
     Rectangle(hMemDC, 0, 0, w + 1, h + 1);
 
-    StretchBlt(hMemDC, 0, 0, w, h - 100,
-      hMemDCLogo, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
-
-    GetLocalTime(&st);
-
     SelectObject(hMemDC, GetStockObject(NULL_PEN));
     SelectObject(hMemDC, GetStockObject(DC_BRUSH));
-    SetDCBrushColor(hMemDC, RGB(255, 0, 0);
-    Sphere(hMemDC, 30);
+    SetDCBrushColor(hMemDC, RGB(255, 0, 0));
+    GlobeBuild();
+    GlobeDraw(hMemDC, h, w);
 
     InvalidateRect(hWnd, NULL, TRUE);
     return 0;
@@ -223,22 +172,6 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
       return 0;
     break;
 
-  case WM_LBUTTONDOWN:
-    SetCapture(hWnd);
-
-    x = LOWORD(lParam);
-    y = HIWORD(lParam);
-    return 0;
-
-  case WM_LBUTTONUP:
-    ReleaseCapture();
-    return 0;
-
-  case WM_MOUSEMOVE:
-    x = (SHORT)LOWORD(lParam);
-    y = (SHORT)HIWORD(lParam);
-    return 0;
-
   case WM_ERASEBKGND:
     BitBlt((HDC)wParam, 0, 0, w, h, hMemDC, 0, 0, SRCCOPY);
     return 0;
@@ -246,8 +179,6 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
   case WM_DESTROY:
     DeleteDC(hMemDC);
     DeleteObject(hBm);
-    DeleteDC(hMemDCLogo);
-    DeleteObject(hBmLogo);
     KillTimer(hWnd, 111);
     PostQuitMessage(0);
     return 0;
