@@ -161,8 +161,8 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     cs = (CREATESTRUCT *)lParam;
     SetTimer(hWnd, 111, 50, NULL);
 
-    hBmLogo = LoadImage(NULL, "clock.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-    GetObject(hBmLogo, sizeof(bm), &bm);
+    /*hBmLogo = LoadImage(NULL, "clock.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+    GetObject(hBmLogo, sizeof(bm), &bm);*/
 
     /* создаем контекст в памяти */
     hDC = GetDC(hWnd);
@@ -197,8 +197,8 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     SetDCBrushColor(hMemDC, RGB(255, 225, 225));
     Rectangle(hMemDC, 0, 0, w + 1, h + 1);
 
-    StretchBlt(hMemDC, 0, 0, w, h - 100,
-      hMemDCLogo, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
+    /*StretchBlt(hMemDC, 0, 0, w, h - 100,
+      hMemDCLogo, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);*/
 
     GetLocalTime(&st);
     
