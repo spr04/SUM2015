@@ -183,6 +183,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\infa.c"
+				>
+			</File>
+			<File
 				RelativePath=".\t04determ.c"
 				>
 			</File>
