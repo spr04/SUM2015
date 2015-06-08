@@ -1,14 +1,15 @@
 /* FILENAME: LOADOBJ.C
- * PROGRAMMER: VG4
+ * PROGRAMMER: AM1
  * PURPOSE: Load 3D nmodel from *.OBJ files.
- * LAST UPDATE: 06.06.2015
+ * LAST UPDATE: 08.06.2015
  */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "vec.h"
-
+#include "cow.h"
 /* Global model data */
 
 /* Vertex array */
@@ -19,7 +20,7 @@ INT ObjNumOfV; /* Number of model vertices */
  * ARGUMENTS: None.
  * RETURNS: None.
  */
-VOID ObjDraw( HDC hDC )
+VOID ObjDraw( HDC hDC, INT H, INT W )
 {
   INT i;
 
@@ -27,12 +28,11 @@ VOID ObjDraw( HDC hDC )
   {
     /* рисуем точку ObjV[i] */
      
-   /* SelectObject(hMemDC, GetStockObject(NULL_PEN));
-    SelectObject(hMemDC, GetStockObject(DC_BRUSH));
-    SetDCBrushColor(hDC, RGB(0, 0, 0)); */ 
-    SetPixel(hDC, ObjV[i].X, ObjV[i].y,  RGB(0, 0, 0));
-  }
-
+    SelectObject(hDC, GetStockObject(NULL_PEN));
+    SelectObject(hDC, GetStockObject(DC_BRUSH));
+    SetDCBrushColor(hDC, RGB(0, 0, 0));  
+    Ellipse(hDC, ObjV[i].X + W / 2, ObjV[i].Y + H / 2, ObjV[i].X + W / 2 + 5, ObjV[i].Y + H / 2 + 5);
+  }              
 } /* End of 'ObjDraw' function */
 
 /* Draw object functioln.
@@ -47,6 +47,7 @@ BOOL ObjLoad( CHAR *FileName )
   FILE *F;
   INT nv = 0;
   static CHAR Buf[10000];
+ 
 
   /* Open file */
   if ((F = fopen(FileName, "r")) == NULL)
@@ -75,6 +76,8 @@ BOOL ObjLoad( CHAR *FileName )
     {
       sscanf(Buf + 2, "%lf%lf%lf",
         &ObjV[nv].X, &ObjV[nv].Y, &ObjV[nv].Z);
+      ObjV[nv] = VecMulNum(ObjV[nv], 40);
+      ObjV[nv] = VecRotateZ(ObjV[nv], 180);
       nv++;
     }
   }

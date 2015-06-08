@@ -1,76 +1,86 @@
-/* FILE NAME: MAIN.C
- * PROGRAMMER: Anya Mitina
- * DATE: 06.06.2015
- * LAST UPDATE: 06.06.2015
- * PURPOSE: draw a cow.
+/* FILENAME: MAIN.C
+ * PROGRAMMER: AM1
+ * PURPOSE: Animation startup module
+ * LAST UPDATE: 08.06.2015
  */
 
-#pragma warning(disable: 4244)
+#include "anim.h"
+#include "units.h"
 
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
-#include <time.h>
+#define WND_CLASS_NAME "My Window Class Name"
 
-#include <windows.h>
+/* Ссылки вперед */
+LRESULT CALLBACK MainWindowFunc( HWND hWnd, UINT Msg,
+                                 WPARAM wParam, LPARAM lParam );
 
-//#include "GLOBE.H"
-//#include "image.h"
-#include "VEC.H"
-/* Имя класса окна */
-#define WND_CLASS_NAME "My window class"
-
-LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
-                               WPARAM wParam, LPARAM lParam );
-
+/* Главная функция программы.
+ * АРГУМЕНТЫ:
+ *   - дескриптор экземпляра приложения:
+ *       HINSTANCE hInstance;
+ *   - дескриптор предыдущего экземпляра приложения
+ *     (не используется и должно быть NULL):
+ *       HINSTANCE hPrevInstance;
+ *   - командная строка:
+ *       CHAR *CmdLine;
+ *   - флаг показа окна (см. SW_SHOWNORMAL, SW_SHOWMINIMIZED, SW_***):
+ *       INT ShowCmd;
+ * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
+ *   (INT) код возврата в операционную систему.
+ */
 INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
                     CHAR *CmdLine, INT ShowCmd )
 {
-  WNDCLASS wc;
+  INT i;
+  WNDCLASSEX wc;
   HWND hWnd;
   MSG msg;
 
-  wc.style = CS_VREDRAW | CS_HREDRAW; /* Стиль окна: полностью перерисовывать
-                                       * при изменении вертикального или
-                                       * горизонтального размеров
-                                       * еще можно CS_DBLCLKS для добавления
-                                       * отработки двойного нажатия */
-  wc.cbClsExtra = 0; /* Дополнительное количество байт для класса */
-  wc.cbWndExtra = 0; /* Дополнительное количество байт для окна */
-  wc.hbrBackground = CreateSolidBrush(RGB(255, 255, 0));
-  wc.hCursor = LoadCursor(NULL, IDC_HAND); /* Загрузка курсора (системного) */
-  wc.hIcon = LoadIcon(NULL, IDI_ASTERISK); /* Загрузка пиктограммы (системной) */
-  wc.hInstance = hInstance; /* Дескриптор приложения, регистрирующего класс */
-  wc.lpszMenuName = NULL; /* Имя ресурса меню */
-  wc.lpfnWndProc = MyWindowFunc; /* Указатель на функцию обработки */
-  wc.lpszClassName = WND_CLASS_NAME;
+  /* Регистрация - создание собственного класса окна */
+  wc.cbSize = sizeof(WNDCLASSEX);      /* Размер структуры для совместимости */
+  wc.style = CS_VREDRAW | CS_HREDRAW;  /* Стиль окна: полностью перерисовывать
+                                        * при изменении вертикального или
+                                        * горизонтального размеров (еще CS_DBLCLKS) */
+  wc.cbClsExtra = 0;                   /* Дополнительное количество байт для класса */
+  wc.cbWndExtra = 0;                   /* Дополнительное количество байт для окна */
+  wc.hbrBackground = (HBRUSH)COLOR_WINDOW;      /* Фоновый цвет - выбранный в системе */
+  wc.hCursor = LoadCursor(NULL, IDC_ARROW);     /* Загрузка курсора (системного) */
+  wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);   /* Загрузка пиктограммы (системной) */
+  wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION); /* Загрузка малой пиктограммы (системной) */
+  wc.lpszMenuName = NULL;                       /* Имя ресурса меню */
+  wc.hInstance = hInstance;                     /* Дескриптор приложения, регистрирующего класс */
+  wc.lpfnWndProc = MainWindowFunc;              /* Указатель на функцию обработки */
+  wc.lpszClassName = WND_CLASS_NAME;            /* Имя класса */
 
-  /* Регистрация класса в системе */
-  if (!RegisterClass(&wc))
+  /* Регистрируем класс */
+  if (!RegisterClassEx(&wc))
   {
-    MessageBox(NULL, "Error register window class", "ERROR", MB_OK);
+    MessageBox(NULL, "Error register window class", "Error", MB_ICONERROR | MB_OK);
     return 0;
   }
 
   /* Создание окна */
-  hWnd =
-    CreateWindow(WND_CLASS_NAME,    /* Имя класса окна */
-      "Title",                      /* Заголовок окна */
-      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,          /* Стили окна - окно общего вида */
-      CW_USEDEFAULT, CW_USEDEFAULT, /* Позиция окна (x, y) - по умолчанию */
-      600, 700,                     /* Размеры окна (w, h) - по умолчанию */
-      NULL,                         /* Дескриптор родительского окна */
-      NULL,                         /* Дескриптор загруженного меню */
-      hInstance,                    /* Дескриптор приложения */
-      NULL);                        /* Указатель на дополнительные параметры */
+  hWnd = CreateWindow(WND_CLASS_NAME, "First Window Sample",
+    WS_OVERLAPPEDWINDOW,          /* Стиль окна - перекрывающееся */
+    CW_USEDEFAULT, CW_USEDEFAULT, /* Позиция окна (x, y) - по умолчанию */
+    CW_USEDEFAULT, CW_USEDEFAULT, /* Размеры окна (w, h) - по умолчанию */
+    NULL,                         /* Дескриптор родительского окна */
+    NULL,                         /* Дескриптор загруженного меню */
+    hInstance,                    /* Дескриптор приложения */
+    NULL);                        /* Указатель на дополнительные параметры */
 
+  /* Отобразить с заданными параметрами */
   ShowWindow(hWnd, ShowCmd);
+  /* Отрисовать немедленно */
   UpdateWindow(hWnd);
 
-  /* Запуск цикла сообщений окна */
+  /*** Добавление объектов ***/
+  for (i = 0; i < 300; i++)
+    AM1_AnimAddUnit(AM1_UnitBallCreate());
+
+  /* Запуск цикла обработки сообщений */
   while (GetMessage(&msg, NULL, 0, 0))
   {
-    /* Обработка сообщений от клавиатуры */
+    /* Дополнительная обработка сообщений от клавиатуры (->WM_CHAR) */
     TranslateMessage(&msg);
     /* Передача сообщений в функцию окна */
     DispatchMessage(&msg);
@@ -79,12 +89,11 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   return msg.wParam;
 } /* End of 'WinMain' function */
 
-
 /* Функция обработки сообщения окна.
  * АРГУМЕНТЫ:
  *   - дескриптор окна:
  *       HWND hWnd;
- *   - номер сообщения (см. WM_***):
+ *   - номер сообщения:
  *       UINT Msg;
  *   - параметр сообшения ('word parameter'):
  *       WPARAM wParam;
@@ -93,80 +102,42 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
  * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
  *   (LRESULT) - в зависимости от сообщения.
  */
-LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
-                               WPARAM wParam, LPARAM lParam )
+LRESULT CALLBACK MainWindowFunc( HWND hWnd, UINT Msg,
+                                 WPARAM wParam, LPARAM lParam )
 {
   HDC hDC;
-  CREATESTRUCT *cs;
-  static BITMAP bm;
-  static HBITMAP hBm, hBmLogo;
-  static HDC hMemDC, hMemDCLogo;
-  static INT w, h;
- 
+  PAINTSTRUCT ps;
 
   switch (Msg)
   {
   case WM_CREATE:
-    //if (GlobeImage.hBm == NULL) 
-    cs = (CREATESTRUCT *)lParam;
-    SetTimer(hWnd, 111, 50, NULL);
-
-    /* создаем контекст в памяти */
-    hDC = GetDC(hWnd);
-    hMemDC = CreateCompatibleDC(hDC);
-    hMemDCLogo = CreateCompatibleDC(hDC);
-    ReleaseDC(hWnd, hDC);
+    SetTimer(hWnd, 30, 1, NULL);
+    AM1_AnimInit(hWnd);
     return 0;
-
   case WM_SIZE:
-    w = LOWORD(lParam);
-    h = HIWORD(lParam);
-
-    /* создаем картинку размером с окно */
-    if (hBm != NULL)
-      DeleteObject(hBm);
-
-    hDC = GetDC(hWnd);
-    hBm = CreateCompatibleBitmap(hDC, w, h);
-    ReleaseDC(hWnd, hDC);
-                      
-    SelectObject(hMemDC, hBm);
-    SendMessage(hWnd, WM_TIMER, 111, 0);
+    AM1_AnimResize(LOWORD(lParam), HIWORD(lParam));
+    AM1_AnimRender();
     return 0;
-
   case WM_TIMER:
-    /* Clear Background */
-    SelectObject(hMemDC, GetStockObject(NULL_PEN));
-    SelectObject(hMemDC, GetStockObject(DC_BRUSH));
-    SetDCBrushColor(hMemDC, RGB(255, 225, 225));    
-    Rectangle(hMemDC, 0, 0, w + 1, h + 1);
-    
-    ObjDraw(hMemDC);
-
-    InvalidateRect(hWnd, NULL, TRUE);
+    AM1_AnimRender();
+    AM1_AnimCopyFrame();
     return 0;
-
-  case WM_CLOSE:
-    if (MessageBox(hWnd, "Are you shure to exit from program?",
-          "Exit", MB_YESNO | MB_ICONQUESTION) == IDNO)
-      return 0;
-    break;
-
   case WM_ERASEBKGND:
-    BitBlt((HDC)wParam, 0, 0, w, h, hMemDC, 0, 0, SRCCOPY);
+    return 1;
+  case WM_PAINT:
+    hDC = BeginPaint(hWnd, &ps);
+    EndPaint(hWnd, &ps);
+    AM1_AnimCopyFrame();
     return 0;
-
   case WM_DESTROY:
-    DeleteDC(hMemDC);
-    DeleteObject(hBm);
-    KillTimer(hWnd, 111);
+    AM1_AnimClose();
     PostQuitMessage(0);
+    KillTimer(hWnd, 30);
     return 0;
   }
   return DefWindowProc(hWnd, Msg, wParam, lParam);
-} /* End of 'MyWindowFunc' function */
+} /* End of 'MainWindowFunc' function */
+
+/* END OF 'STARTUP.C' FILE */
 
 
-/* END OF 'T05GLOBE.C' FILE */
-
-/* END OF 'MAIN.C' FILE */

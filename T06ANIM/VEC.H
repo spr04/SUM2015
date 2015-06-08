@@ -1,7 +1,7 @@
 /* FILE NAME: VEC.H
  * PROGRAMMER: Anya Mitina
  * DATE: 06.06.2015
- * LAST UPDATE: 06.06.2015
+ * LAST UPDATE: 08.06.2015
  * PURPOSE: own library of spatial math.
  */
 //#ifndef __VEC_H
@@ -13,7 +13,7 @@
 
 #define DEGREE2RADIANL 0.01745329251994329576L
 /* Multiplyer degree to radian constant */
-long double MultiplierDegree2Radian = DEGREE2RADIANL;
+static long double MultiplierDegree2Radian = DEGREE2RADIANL;
 
 /* базовый вещественный тип */
 typedef double DBL;
@@ -25,3 +25,34 @@ typedef struct tagVEC
 } VEC;
 
 
+__inline VEC VecSet( DBL X, DBL Y, DBL Z )
+{
+  VEC r = {X, Y, Z};
+
+  return r;
+}
+
+__inline VEC VecMulNum( VEC A, DBL N )
+{
+  return VecSet(A.X * N, A.Y * N, A.Z * N);
+}
+
+__inline VEC VecRotateZ( VEC V, DBL AngleInDegree )
+{
+  DBL sine, cosine, tmp;
+
+  __asm {
+    /* FST(0) Angle (from degree to radian) */
+    fld  AngleInDegree
+    fmul MultiplierDegree2Radian
+    
+    /* FST(0) - cos, FST(1) - sin */
+    fsincos
+    fstp cosine /* cos -> cosine */
+    fstp sine   /* sin -> sine */
+  }
+  tmp = V.X * cosine - V.Y * sine;
+  V.Y = V.X * sine + V.Y * cosine;
+  V.X = tmp;
+  return V;
+} /* End of 'VecRotateZ' function */

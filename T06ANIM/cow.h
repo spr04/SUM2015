@@ -6,5 +6,7 @@
 #include <time.h>
 
 #include <windows.h>
-VOID ObjDraw( HDC hDC );
+VOID ObjDraw( HDC hDC, INT H, INT W );
 BOOL ObjLoad( CHAR *FileName );
+
+//VOID Rotate(DOUBLE Angle, VEC V, );

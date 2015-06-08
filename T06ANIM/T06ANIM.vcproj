@@ -179,15 +179,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\cow.h"
-				>
-			</File>
-			<File
-				RelativePath="Q:\cow.object"
-				>
-			</File>
-			<File
-				RelativePath=".\loadobj.c"
+				RelativePath="..\T05GLOBE\def.h"
 				>
 			</File>
 			<File
@@ -195,9 +187,41 @@
 				>
 			</File>
 			<File
-				RelativePath=".\VEC.H"
+				RelativePath=".\UBALL.C"
 				>
 			</File>
+			<File
+				RelativePath=".\units.h"
+				>
+			</File>
+			<Filter
+				Name="Animation System"
+				>
+				<File
+					RelativePath=".\ANIM.C"
+					>
+				</File>
+				<File
+					RelativePath=".\ANIM.H"
+					>
+				</File>
+				<File
+					RelativePath=".\UNIT.C"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="3D Object Support"
+				>
+				<File
+					RelativePath=".\loadobj.c"
+					>
+				</File>
+				<File
+					RelativePath=".\VEC.H"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
