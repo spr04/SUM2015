@@ -1,7 +1,7 @@
 /* FILENAME: LOADOBJ.C
  * PROGRAMMER: AM1
  * PURPOSE: Load 3D nmodel from *.OBJ files.
- * LAST UPDATE: 08.06.2015
+ * LAST UPDATE: 09.06.2015
  */
 
 #include <stdio.h>

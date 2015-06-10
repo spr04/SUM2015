@@ -26,6 +26,7 @@ typedef struct
   /* Массив элементов анимации и их количество */
   am1UNIT *Units[AM1_MAX_UNITS]; 
   INT NumOfUnits;
+
   DBL
     Time,            /* время в секундах со старта анимации */
     GlobalTime,      /* время -"-, но без паузы */
@@ -34,7 +35,23 @@ typedef struct
     FPS;             /* количество кадров в секунду */
   BOOL
     IsPause;         /* флаг паузы */
-
+  
+  /* Подсистема ввода */
+  BYTE
+    Keys[256],       /* Сотояние клавиш клавиатуры и мыши */
+    KeysOld[256],    /* Сотояние клавиш на предыдущем кадре */
+    KeysClick[256];  /* Флаги однократного нажатия */
+  INT
+    MsDeltaX, MsDeltaY, /* Относительные координаты курсора мыши */
+    MsX, MsY,        /* Абсолютные координаты курсора мыши */
+    MsWheel;         /* Состояние колеса мыши */
+  BYTE
+    JButs[32],       /* Сотояние кнопок джойстика */
+    JButsOld[32],    /* Сотояние кнопок джойстика на предыдущем кадре */
+    JButsClick[32],  /* Флаги однократного нажатия кнопок джойстика */
+    JPOV;            /* Переключатель POV - 0..8 */
+  DBL
+    JX, JY, JZ, JR, JU, JV; /* Оси джойстика (-1.0 .. 1.0*/
 } am1ANIM;
 
 /* Базовые поля объекта анимации:
@@ -63,6 +80,9 @@ struct tagam1UNIT
 {
   AM1_UNIT_BASE_FIELDS;
 };
+
+/* Глобальная переменная - счетчик прокрутки колеса мыши */
+extern INT AM1_MouseWheel;
 
 /* Функция инициализации анимации.
  * АРГУМЕНТЫ:
@@ -122,14 +142,13 @@ VOID AM1_AnimFlipFullScreen( VOID );
  */
 am1UNIT * AM1_AnimUnitCreate( INT Size );
 
+VOID AM1_AnimSetPause( BOOL NewPauseFlag );
+                              
 /* Функция выхода из анимации.
  * АРГУМЕНТЫ: Нет.
  * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ: Нет.
  */
 VOID AM1_AnimDoExit( VOID );
-
-VOID AM1_AnimSetPause( BOOL NewPauseFlag );                               
-
 
 #endif /* __ANIM_H_ */
 

@@ -1,6 +1,6 @@
 /* FILENAME: UBALL.C
  * PROGRAMMER: AM1
- * PURPOSE: Bounce ball unit handle module.
+ * PURPOSE: cow unit handle module.
  * LAST UPDATE: 09.06.2015
  */
 
@@ -9,6 +9,7 @@
 
 #include "anim.h"
 #include "vec.h"
+#include "UNITS.H"
 
 
 /* Òèï ïðåäñòàâëåíèÿ ìÿ÷à */
@@ -18,27 +19,13 @@ typedef struct tagam1UNIT_BALL
 
   VEC Pos;     /* Ïîçèöèÿ ìÿ÷à */
   DWORD Color; /* Öâåò ìÿ÷à */
-  DBL
-    Amplitude,  /* Àìïëèòóäà */
-    PhaseShift, /* Ñäâèã ïî ôàçå */
-    ScaleShift; /* Ìàñøòàá âðåìåíè */
-} am1UNIT_BALL;
+} am1UNIT_COW;
 
-/* Ôóíêöèÿ èíèöèàëèçàöèè îáúåêòà àíèìàöèè.
- * ÀÐÃÓÌÅÍÒÛ:
- *   - óêàçàòåëü íà "ñåáÿ" - ñàì îáúåêò àíèìàöèè:
- *       am1UNIT_BALL *Uni;
- *   - óêàçàòåëü íà êîíòåêñò àíèìàöèè:
- *       am1ANIM *Ani;
- * ÂÎÇÂÐÀÙÀÅÌÎÅ ÇÍÀ×ÅÍÈÅ: Íåò.
- */
-static VOID AM1_AnimUnitInit( am1UNIT_BALL *Uni, am1ANIM *Ani )
+static VOID AM1_AnimUnitInit( am1UNIT_COW *Uni, am1ANIM *Ani )
 {
+  ObjLoad("cow.object");
   Uni->Pos = VecSet(rand() % 1000, rand() % 700, 0);
   Uni->Color = RGB(rand() % 256, rand() % 256, rand() % 256);
-  Uni->PhaseShift = rand() % 3000;
-  Uni->ScaleShift = 5 + 0.30 * rand() / RAND_MAX;
-  Uni->Amplitude = 30 + 59.0 * rand() / RAND_MAX;
 } /* End of 'AM1_AnimUnitInit' function */
 
 /* Ôóíêöèÿ äåèíèöèàëèçàöèè îáúåêòà àíèìàöèè.
@@ -49,7 +36,7 @@ static VOID AM1_AnimUnitInit( am1UNIT_BALL *Uni, am1ANIM *Ani )
  *       am1ANIM *Ani;
  * ÂÎÇÂÐÀÙÀÅÌÎÅ ÇÍÀ×ÅÍÈÅ: Íåò.
  */
-static VOID AM1_AnimUnitClose( am1UNIT_BALL *Uni, am1ANIM *Ani )
+static VOID AM1_AnimUnitClose( am1UNIT_COW *Uni, am1ANIM *Ani )
 {
 } /* End of 'AM1_AnimUnitClose' function */
 
@@ -61,16 +48,15 @@ static VOID AM1_AnimUnitClose( am1UNIT_BALL *Uni, am1ANIM *Ani )
  *       am1ANIM *Ani;
  * ÂÎÇÂÐÀÙÀÅÌÎÅ ÇÍÀ×ÅÍÈÅ: Íåò.
  */
-static VOID AM1_AnimUnitResponse( am1UNIT_BALL *Uni, am1ANIM *Ani )
+static VOID AM1_AnimUnitResponse( am1UNIT_COW *Uni, am1ANIM *Ani )
 {
   if (Ani->KeysClick[VK_ESCAPE])
     AM1_AnimDoExit();
   if (Ani->KeysClick['F'])
-    AM1_AnimFlipFullScreen(); /*
+    AM1_AnimFlipFullScreen();
   if (Ani->KeysClick['P'])
-    AM1_AnimSetPause(TRUE);     */
+    AM1_AnimSetPause(TRUE);  /*   */
 
-  Uni->Amplitude += 30 * Ani->MsWheel;
 
 } /* End of 'AM1_AnimUnitResponse' function */
 
@@ -82,12 +68,10 @@ static VOID AM1_AnimUnitResponse( am1UNIT_BALL *Uni, am1ANIM *Ani )
  *       am1ANIM *Ani;
  * ÂÎÇÂÐÀÙÀÅÌÎÅ ÇÍÀ×ÅÍÈÅ: Íåò.
  */
-static VOID AM1_AnimUnitRender( am1UNIT_BALL *Uni, am1ANIM *Ani )
+static VOID AM1_AnimUnitRender( am1UNIT_COW *Uni, am1ANIM *Ani )
 {
-  DBL shift = Uni->Amplitude * fabs(sin(Uni->ScaleShift * Ani->Time + Uni->PhaseShift));
-
   SetDCBrushColor(Ani->hDC, Uni->Color);
-  Ellipse(Ani->hDC, Uni->Pos.X - 5, Uni->Pos.Y - 5 - shift, Uni->Pos.X + 5, Uni->Pos.Y + 5 - shift);
+  ObjDraw(Ani->hDC, Ani->H, Ani->W);
 } /* End of 'am1_AnimUnitRender' function */
 
 /* Ôóíêöèÿ ñîçäàíèÿ îáúåêòà àíèìàöèè "ìÿ÷".
@@ -95,11 +79,11 @@ static VOID AM1_AnimUnitRender( am1UNIT_BALL *Uni, am1ANIM *Ani )
  * ÂÎÇÂÐÀÙÀÅÌÎÅ ÇÍÀ×ÅÍÈÅ:
  *   (am1UNIT *) óêàçàòåëü íà ñîçäàííûé îáúåêò àíèìàöèè.
  */
-am1UNIT * AM1_UnitBallCreate( VOID )
+am1UNIT * AM1_UnitCowCreate( VOID )
 {
-  am1UNIT_BALL *Uni;
+  am1UNIT_COW *Uni;
 
-  if ((Uni = (VOID *)AM1_AnimUnitCreate(sizeof(am1UNIT_BALL))) == NULL)
+  if ((Uni = (VOID *)AM1_AnimUnitCreate(sizeof(am1UNIT_COW))) == NULL)
     return NULL;
   /* çàïîëíÿåì ïîëÿ */
   Uni->Init = (VOID *)AM1_AnimUnitInit;

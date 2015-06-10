@@ -179,19 +179,15 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\cow.h"
+				>
+			</File>
+			<File
 				RelativePath="..\T05GLOBE\def.h"
 				>
 			</File>
 			<File
 				RelativePath=".\main.c"
-				>
-			</File>
-			<File
-				RelativePath=".\UBALL.C"
-				>
-			</File>
-			<File
-				RelativePath=".\units.h"
 				>
 			</File>
 			<Filter
@@ -209,16 +205,36 @@
 					RelativePath=".\UNIT.C"
 					>
 				</File>
+				<File
+					RelativePath=".\UNITS.H"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="3D Object Support"
 				>
 				<File
-					RelativePath=".\loadobj.c"
+					RelativePath=".\LOADOBJ.C"
 					>
 				</File>
 				<File
 					RelativePath=".\VEC.H"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Units"
+				>
+				<File
+					RelativePath=".\UBALL.C"
+					>
+				</File>
+				<File
+					RelativePath=".\UCONTROL2.C"
+					>
+				</File>
+				<File
+					RelativePath=".\UCOW.C"
 					>
 				</File>
 			</Filter>

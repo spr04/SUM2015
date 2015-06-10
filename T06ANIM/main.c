@@ -1,13 +1,16 @@
 /* FILENAME: MAIN.C
  * PROGRAMMER: AM1
  * PURPOSE: Animation startup module
- * LAST UPDATE: 08.06.2015
+ * LAST UPDATE: 09.06.2015
  */
 
 #include "anim.h"
 #include "units.h"
 
 #define WND_CLASS_NAME "My Window Class Name"
+
+/* Глобальная переменная - счетчик прокрутки колеса мыши */
+INT AM1_MouseWheel;
 
 /* Ссылки вперед */
 LRESULT CALLBACK MainWindowFunc( HWND hWnd, UINT Msg,
@@ -121,6 +124,9 @@ LRESULT CALLBACK MainWindowFunc( HWND hWnd, UINT Msg,
   case WM_TIMER:
     AM1_AnimRender();
     AM1_AnimCopyFrame();
+    return 0;
+  case WM_MOUSEWHEEL:
+    AM1_MouseWheel += (SHORT)HIWORD(wParam) / WHEEL_DELTA;
     return 0;
   case WM_ERASEBKGND:
     return 1;
