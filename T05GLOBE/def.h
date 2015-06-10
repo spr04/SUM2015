@@ -1,5 +1,5 @@
 /* FILENAME: DEF.H
- * PROGRAMMER: VG4
+ * PROGRAMMER: AM1
  * PURPOSE: Default definitions.
  * LAST UPDATE: 05.06.2015
  */

@@ -191,4 +191,4 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
 } /* End of 'MyWindowFunc' function */
 
 
-/* END OF 'T02CLOCK.C' FILE */
+/* END OF 'T05GLOBE.C' FILE */

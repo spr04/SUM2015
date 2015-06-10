@@ -84,7 +84,7 @@ VOID GlobeBuild( VOID )
       Grid[i][j].Y = 0.888 * R * cos(theta);
       Grid[i][j].Z = R * sin(theta) * cos(phi);
       
-      Grid[i][j] = RotateX(Grid[i][j], -30);
+      Grid[i][j] = RotateX(Grid[i][j],  30 * sin(t * 3));
     }
   }
 }
