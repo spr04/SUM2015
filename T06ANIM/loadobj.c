@@ -9,7 +9,7 @@
 #include <time.h>
 
 #include "vec.h"
-#include "cow.h"
+
 /* Global model data */
 
 /* Vertex array */

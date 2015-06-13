@@ -77,8 +77,10 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   UpdateWindow(hWnd);
 
   /*** Добавление объектов ***/
-  for (i = 0; i < 300; i++)
+  for (i = 0; i < 100; i++)
     AM1_AnimAddUnit(AM1_UnitBallCreate());
+  AM1_AnimAddUnit(AM1_UnitModelCreate());
+  //AM1_AnimAddUnit(AM1_UnitControlCreate());
 
   /* Запуск цикла обработки сообщений */
   while (GetMessage(&msg, NULL, 0, 0))

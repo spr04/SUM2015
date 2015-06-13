@@ -8,10 +8,12 @@
 #define __ANIM_H_
 
 #include "DEF.H"
+#include "RENDER.H"
 
 /* Максимальное количество элементов анимации */
-#define AM1_MAX_UNITS 30
+#define AM1_MAX_UNITS 300
 
+         
 /* Объявление типа объектов анимации "вперед" */
 typedef struct tagam1UNIT am1UNIT;
 
@@ -26,7 +28,7 @@ typedef struct
   /* Массив элементов анимации и их количество */
   am1UNIT *Units[AM1_MAX_UNITS]; 
   INT NumOfUnits;
-
+  
   DBL
     Time,            /* время в секундах со старта анимации */
     GlobalTime,      /* время -"-, но без паузы */
@@ -35,7 +37,7 @@ typedef struct
     FPS;             /* количество кадров в секунду */
   BOOL
     IsPause;         /* флаг паузы */
-  
+   
   /* Подсистема ввода */
   BYTE
     Keys[256],       /* Сотояние клавиш клавиатуры и мыши */
@@ -51,9 +53,10 @@ typedef struct
     JButsClick[32],  /* Флаги однократного нажатия кнопок джойстика */
     JPOV;            /* Переключатель POV - 0..8 */
   DBL
-    JX, JY, JZ, JR, JU, JV; /* Оси джойстика (-1.0 .. 1.0*/
+    JX, JY, JZ, JR, JU, JV;/* Оси джойстика (-1.0 .. 1.0*/
 } am1ANIM;
 
+extern am1ANIM AM1_Anim;
 /* Базовые поля объекта анимации:
  * - размер структуры для наследования
  *     INT Size;

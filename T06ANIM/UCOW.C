@@ -9,23 +9,21 @@
 
 #include "anim.h"
 #include "vec.h"
-#include "UNITS.H"
+#include "RENDER.H"
 
 
-/* Тип представления мяча */
-typedef struct tagam1UNIT_BALL
+
+/* Тип представления коровы */
+typedef struct tagam1UNIT_COW
 {
   AM1_UNIT_BASE_FIELDS;
 
-  VEC Pos;     /* Позиция мяча */
-  DWORD Color; /* Цвет мяча */
+  am1GOBJ Model;
 } am1UNIT_COW;
 
 static VOID AM1_AnimUnitInit( am1UNIT_COW *Uni, am1ANIM *Ani )
 {
-  ObjLoad("cow.object");
-  Uni->Pos = VecSet(rand() % 1000, rand() % 700, 0);
-  Uni->Color = RGB(rand() % 256, rand() % 256, rand() % 256);
+  AM1_RndGObjLoad(&Uni->Model, "cow.object");
 } /* End of 'AM1_AnimUnitInit' function */
 
 /* Функция деинициализации объекта анимации.
@@ -38,6 +36,7 @@ static VOID AM1_AnimUnitInit( am1UNIT_COW *Uni, am1ANIM *Ani )
  */
 static VOID AM1_AnimUnitClose( am1UNIT_COW *Uni, am1ANIM *Ani )
 {
+  AM1_RndGObjFree(&Uni->Model);
 } /* End of 'AM1_AnimUnitClose' function */
 
 /* Функция обновления межкадровых параметров объекта анимации.
@@ -54,8 +53,8 @@ static VOID AM1_AnimUnitResponse( am1UNIT_COW *Uni, am1ANIM *Ani )
     AM1_AnimDoExit();
   if (Ani->KeysClick['F'])
     AM1_AnimFlipFullScreen();
-  if (Ani->KeysClick['P'])
-    AM1_AnimSetPause(TRUE);  /*   */
+  if (Ani->Keys['P'])
+    AM1_AnimSetPause(TRUE);   
 
 
 } /* End of 'AM1_AnimUnitResponse' function */
@@ -70,8 +69,15 @@ static VOID AM1_AnimUnitResponse( am1UNIT_COW *Uni, am1ANIM *Ani )
  */
 static VOID AM1_AnimUnitRender( am1UNIT_COW *Uni, am1ANIM *Ani )
 {
-  SetDCBrushColor(Ani->hDC, Uni->Color);
-  ObjDraw(Ani->hDC, Ani->H, Ani->W);
+  AM1_RndMatrView = MatrView(VecSet(30, 30, 30),
+                             VecSet(0, 0, 0),
+                             VecSet(0, 1, 0)); 
+  AM1_RndMatrWorld = 
+    MatrMulMatr(MatrMulMatr(MatrMulMatr(
+    MatrTranslate(Ani->JX * 59, Ani-> JY * 88, 0), MatrScale(0.1, 0.1, 0.1)),
+    MatrRotateY(Ani->Time * 30 + Ani-> JR * 180)),
+    MatrTranslate(0, 0, 100 * Ani->JZ));
+  AM1_RndGObjDraw(&Uni->Model);
 } /* End of 'am1_AnimUnitRender' function */
 
 /* Функция создания объекта анимации "мяч".
@@ -79,7 +85,7 @@ static VOID AM1_AnimUnitRender( am1UNIT_COW *Uni, am1ANIM *Ani )
  * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
  *   (am1UNIT *) указатель на созданный объект анимации.
  */
-am1UNIT * AM1_UnitCowCreate( VOID )
+am1UNIT * AM1_UnitModelCreate( VOID )
 {
   am1UNIT_COW *Uni;
 
@@ -91,6 +97,6 @@ am1UNIT * AM1_UnitCowCreate( VOID )
   Uni->Response = (VOID *)AM1_AnimUnitResponse;
   Uni->Render = (VOID *)AM1_AnimUnitRender;
   return (am1UNIT *)Uni;
-} /* End of 'AM1_UnitBallCreate' function */
+} /* End of 'AM1_UnitCowCreate' function */
 
 /* END OF 'UBALL.C' FILE */

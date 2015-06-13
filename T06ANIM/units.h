@@ -7,7 +7,6 @@
 #include <stdio.h>
 
 am1UNIT * AM1_UnitBallCreate( VOID );
-VOID ObjDraw( HDC hDC, INT H, INT W );
-BOOL ObjLoad( CHAR *FileName );
+am1UNIT * AM1_UnitModelCreate( VOID );
 
 /* END OF 'UNITS.H' FILE */

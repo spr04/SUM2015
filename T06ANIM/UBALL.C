@@ -66,9 +66,11 @@ static VOID AM1_AnimUnitResponse( am1UNIT_BALL *Uni, am1ANIM *Ani )
   if (Ani->KeysClick[VK_ESCAPE])
     AM1_AnimDoExit();
   if (Ani->KeysClick['F'])
-    AM1_AnimFlipFullScreen(); /*
+    AM1_AnimFlipFullScreen(); 
   if (Ani->KeysClick['P'])
-    AM1_AnimSetPause(TRUE);     */
+    AM1_AnimSetPause(TRUE);
+  if (Ani->KeysClick['O'])
+    AM1_AnimSetPause(FALSE);
 
   Uni->Amplitude += 30 * Ani->MsWheel;
 

@@ -9,7 +9,7 @@
 #pragma comment(lib, "winmm")
 
 /* Системный контекст анимации */
-static am1ANIM AM1_Anim;
+am1ANIM AM1_Anim;
 
 /* Данные для синхронизации по времени */
 static INT64
@@ -109,6 +109,12 @@ VOID AM1_AnimResize( INT W, INT H )
   AM1_Anim.H = H;
 
   ReleaseDC(AM1_Anim.hWnd, hDC);
+
+  /* Корректировка параметров проецирования */
+  if (W > H)
+    AM1_RndWp = (DBL)W / H * 3, AM1_RndHp = 3;
+  else
+    AM1_RndHp = (DBL)H / W * 3, AM1_RndWp = 3;
 } /* End of 'AM1_AnimResize' function */
 
 /* Функция построения кадра анимации.
@@ -120,23 +126,6 @@ VOID AM1_AnimRender( VOID )
   INT i;
   LARGE_INTEGER li;
   POINT pt;
-
-   /* очистка фона */
-  SelectObject(AM1_Anim.hDC, GetStockObject(DC_BRUSH));
-  SelectObject(AM1_Anim.hDC, GetStockObject(NULL_PEN));
-  SetDCBrushColor(AM1_Anim.hDC, RGB(250, 230, 250));
-  Rectangle(AM1_Anim.hDC, 0, 0, AM1_Anim.W + 1, AM1_Anim.H + 1);
-
-   /* рисование объектов */
-  for (i = 0; i < AM1_Anim.NumOfUnits; i++)
-  {
-    SelectObject(AM1_Anim.hDC, GetStockObject(DC_BRUSH));
-    SelectObject(AM1_Anim.hDC, GetStockObject(DC_PEN));
-    SetDCBrushColor(AM1_Anim.hDC, RGB(255, 255, 255));
-    SetDCPenColor(AM1_Anim.hDC, RGB(0, 0, 0));
-
-    AM1_Anim.Units[i]->Render(AM1_Anim.Units[i], &AM1_Anim);
-  }
 
   
   /*** Обновление таймера ***/
@@ -153,9 +142,19 @@ VOID AM1_AnimRender( VOID )
   }
 
   AM1_Anim.Time = (DBL)(li.QuadPart - TimePause - TimeStart) / TimeFreq; 
+  /* Вычисляем FPS */
+  if (li.QuadPart - TimeFPS > TimeFreq)
+  {
+    AM1_Anim.FPS = FrameCounter / ((DBL)(li.QuadPart - TimeFPS) / TimeFreq);
+    TimeFPS = li.QuadPart;
+    FrameCounter = 0;
+  }
+
+  /* время прошлого кадра */
+  TimeOld = li.QuadPart;
 
   /*** Обновление ввода ***/
-
+  
   /* Клавиатура */
   GetKeyboardState(AM1_Anim.Keys);
   for (i = 0; i < 256; i++)
@@ -178,12 +177,12 @@ VOID AM1_AnimRender( VOID )
   AM1_Anim.MsDeltaY = pt.y - AM1_MouseOldY;
   AM1_MouseOldX = pt.x;
   AM1_MouseOldY = pt.y;
-
+  
   /* Джойстик */
   if ((i = joyGetNumDevs()) > 0)
   {
     JOYCAPS jc;
-
+   
     /* получение общей информации о джостике */
     if (joyGetDevCaps(JOYSTICKID2, &jc, sizeof(jc)) == JOYERR_NOERROR)
     {
@@ -200,7 +199,7 @@ VOID AM1_AnimRender( VOID )
           AM1_Anim.JButs[i] = (ji.dwButtons >> i) & 1;
         for (i = 0; i < 32; i++)
           AM1_Anim.JButs[i] = AM1_Anim.JButs[i] && !AM1_Anim.JButsOld[i];
-
+   
         /* Оси */
         AM1_Anim.JX = AM1_GET_AXIS_VALUE(X);
         AM1_Anim.JY = AM1_GET_AXIS_VALUE(Y);
@@ -212,7 +211,7 @@ VOID AM1_AnimRender( VOID )
           AM1_Anim.JV = AM1_GET_AXIS_VALUE(V);
         if (jc.wCaps & JOYCAPS_HASR)
           AM1_Anim.JR = AM1_GET_AXIS_VALUE(R);
-
+   
         if (jc.wCaps & JOYCAPS_HASPOV)
         {
           if (ji.dwPOV == 0xFFFF)
@@ -226,7 +225,24 @@ VOID AM1_AnimRender( VOID )
   /* опрос на изменение состояний объектов */
   for (i = 0; i < AM1_Anim.NumOfUnits; i++)
     AM1_Anim.Units[i]->Response(AM1_Anim.Units[i], &AM1_Anim);
-     
+
+ /* очистка фона */
+  SelectObject(AM1_Anim.hDC, GetStockObject(DC_BRUSH));
+  SelectObject(AM1_Anim.hDC, GetStockObject(NULL_PEN));
+  SetDCBrushColor(AM1_Anim.hDC, RGB(250, 230, 250));
+  Rectangle(AM1_Anim.hDC, 0, 0, AM1_Anim.W + 1, AM1_Anim.H + 1);
+
+   /* рисование объектов */
+  for (i = 0; i < AM1_Anim.NumOfUnits; i++)
+  {
+    SelectObject(AM1_Anim.hDC, GetStockObject(DC_BRUSH));
+    SelectObject(AM1_Anim.hDC, GetStockObject(DC_PEN));
+    SetDCBrushColor(AM1_Anim.hDC, RGB(255, 255, 255));
+    SetDCPenColor(AM1_Anim.hDC, RGB(0, 0, 0));
+
+    AM1_Anim.Units[i]->Render(AM1_Anim.Units[i], &AM1_Anim);
+  }
+    
   
 } /* End of 'AM1_AnimRender' function */
 

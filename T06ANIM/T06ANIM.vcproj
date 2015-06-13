@@ -179,10 +179,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\cow.h"
-				>
-			</File>
-			<File
 				RelativePath="..\T05GLOBE\def.h"
 				>
 			</File>
@@ -214,10 +210,6 @@
 				Name="3D Object Support"
 				>
 				<File
-					RelativePath=".\LOADOBJ.C"
-					>
-				</File>
-				<File
 					RelativePath=".\VEC.H"
 					>
 				</File>
@@ -237,6 +229,18 @@
 					RelativePath=".\UCOW.C"
 					>
 				</File>
+				<Filter
+					Name="Render"
+					>
+					<File
+						RelativePath=".\RENDER.C"
+						>
+					</File>
+					<File
+						RelativePath=".\RENDER.H"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
