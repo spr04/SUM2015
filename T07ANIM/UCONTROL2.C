@@ -5,11 +5,8 @@
  */
 
 #include <stdio.h>
-#include <string.h>
-#include <time.h>
 
 #include "anim.h"
-#include "vec.h"
 
 /* Тип представления мяча */
 typedef struct tagam1UNIT_CTRL
@@ -76,12 +73,19 @@ static VOID AM1_AnimUnitResponse( am1UNIT_CTRL *Uni, am1ANIM *Ani )
 static VOID AM1_AnimUnitRender( am1UNIT_CTRL *Uni, am1ANIM *Ani )
 {
   HFONT hFntOld = SelectObject(Ani->hDC, Uni->hFnt);
-  RECT rc;
+    static DBL count = 30;
   static CHAR Buf[1000];
 
-  SetTextColor(Ani->hDC, RGB(255, 255, 255));
-  SetBkMode(Ani->hDC, TRANSPARENT);
+  count += Ani->GlobalDeltaTime;
+  if (count > 1)
+  {
+    count = 0;
+    sprintf(Buf, "FPS: %.3f", Ani->FPS);
+    SetWindowText(Ani->hWnd, Buf);
+  }
 
+  /*SetTextColor(Ani->hDC, RGB(255, 255, 255));
+  SetBkMode(Ani->hDC, TRANSPARENT);
   rc.left = 0;
   rc.top = 0;
   rc.right = Ani->W;
@@ -96,8 +100,7 @@ static VOID AM1_AnimUnitRender( am1UNIT_CTRL *Uni, am1ANIM *Ani )
       Ani->JX, Ani->JY, Ani->JZ, Ani->JR, Ani->JU, Ani->JV),
     &rc,
     DT_TOP | DT_LEFT);
-
-  SelectObject(Ani->hDC, hFntOld);
+  SelectObject(Ani->hDC, hFntOld);  */
 } /* End of 'AM1_AnimUnitRender' function */
 
 /* Функция создания объекта анимации "управление".

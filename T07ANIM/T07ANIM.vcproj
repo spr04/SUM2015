@@ -183,20 +183,16 @@
 				>
 			</File>
 			<File
-				RelativePath=".\LOADOBJ.C"
-				>
-			</File>
-			<File
 				RelativePath=".\main.c"
-				>
-			</File>
-			<File
-				RelativePath=".\TIMER.C"
 				>
 			</File>
 			<Filter
 				Name="SD Object Support"
 				>
+				<File
+					RelativePath=".\VEC.C"
+					>
+				</File>
 				<File
 					RelativePath=".\VEC.H"
 					>
@@ -205,6 +201,14 @@
 			<Filter
 				Name="Units"
 				>
+				<File
+					RelativePath=".\IMAGE.C"
+					>
+				</File>
+				<File
+					RelativePath=".\IMAGE.H"
+					>
+				</File>
 				<File
 					RelativePath=".\UCONTROL2.C"
 					>
@@ -218,11 +222,19 @@
 				Name="Animation System"
 				>
 				<File
-					RelativePath=".\ANIM.C"
+					RelativePath=".\ANIM.H"
 					>
 				</File>
 				<File
-					RelativePath=".\ANIM.H"
+					RelativePath=".\ANIM1.C"
+					>
+				</File>
+				<File
+					RelativePath=".\GEOM.C"
+					>
+				</File>
+				<File
+					RelativePath=".\PRIM.C"
 					>
 				</File>
 				<File
@@ -245,6 +257,22 @@
 						>
 					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="Shaders"
+				>
+				<File
+					RelativePath=".\SHADERS.C"
+					>
+				</File>
+				<File
+					RelativePath=".\TEST.FRAG"
+					>
+				</File>
+				<File
+					RelativePath=".\TEST.VERT"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter

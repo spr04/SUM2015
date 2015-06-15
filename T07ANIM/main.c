@@ -1,7 +1,7 @@
 /* FILENAME: MAIN.C
  * PROGRAMMER: AM1
  * PURPOSE: Animation startup module
- * LAST UPDATE: 09.06.2015
+ * LAST UPDATE: 10.06.2015
  */
 
 #include "anim.h"
@@ -9,21 +9,12 @@
 
 #define WND_CLASS_NAME "My Window Class Name"
 
-#define GLEW_STATIC
-#include <glew.h>
-#include <gl/gl.h>
-#include <gl/glu.h>
-
-#pragma comment(lib, "glew32s")
-#pragma comment(lib, "opengl32")
-#pragma comment(lib, "glu32")
-
-/* Глобальная переменная - счетчик прокрутки колеса мыши */
-INT AM1_MouseWheel;
-
 /* Ссылки вперед */
 LRESULT CALLBACK MainWindowFunc( HWND hWnd, UINT Msg,
                                  WPARAM wParam, LPARAM lParam );
+
+/* Глобальная переменная - счетчик прокрутки колеса мыши */
+INT AM1_MouseWheel;
 
 /* Главная функция программы.
  * АРГУМЕНТЫ:
@@ -42,7 +33,6 @@ LRESULT CALLBACK MainWindowFunc( HWND hWnd, UINT Msg,
 INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
                     CHAR *CmdLine, INT ShowCmd )
 {
-  INT i;
   WNDCLASSEX wc;
   HWND hWnd;
   MSG msg;
@@ -86,10 +76,8 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   UpdateWindow(hWnd);
 
   /*** Добавление объектов ***/
-  for (i = 0; i < 100; i++)
-    AM1_AnimAddUnit(AM1_UnitBallCreate());
   AM1_AnimAddUnit(AM1_UnitModelCreate());
-  //AM1_AnimAddUnit(AM1_UnitControlCreate());
+  AM1_AnimAddUnit(AM1_UnitControlCreate());
 
   /* Запуск цикла обработки сообщений */
   while (GetMessage(&msg, NULL, 0, 0))
@@ -126,7 +114,8 @@ LRESULT CALLBACK MainWindowFunc( HWND hWnd, UINT Msg,
   {
   case WM_CREATE:
     SetTimer(hWnd, 30, 1, NULL);
-    AM1_AnimInit(hWnd);
+    if (!AM1_AnimInit(hWnd))
+      return -1;
     return 0;
   case WM_SIZE:
     AM1_AnimResize(LOWORD(lParam), HIWORD(lParam));
@@ -155,6 +144,6 @@ LRESULT CALLBACK MainWindowFunc( HWND hWnd, UINT Msg,
   return DefWindowProc(hWnd, Msg, wParam, lParam);
 } /* End of 'MainWindowFunc' function */
 
-/* END OF 'STARTUP.C' FILE */
+/* END OF 'MAIN.C' FILE */
 
 
