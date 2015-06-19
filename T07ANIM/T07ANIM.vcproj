@@ -186,6 +186,10 @@
 				RelativePath=".\main.c"
 				>
 			</File>
+			<File
+				RelativePath=".\MTLLIB.C"
+				>
+			</File>
 			<Filter
 				Name="SD Object Support"
 				>
@@ -215,6 +219,10 @@
 				</File>
 				<File
 					RelativePath=".\UCOW.C"
+					>
+				</File>
+				<File
+					RelativePath=".\USEA.C"
 					>
 				</File>
 			</Filter>

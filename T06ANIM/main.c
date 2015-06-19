@@ -77,8 +77,8 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   UpdateWindow(hWnd);
 
   /*** Добавление объектов ***/
-  for (i = 0; i < 100; i++)
-    AM1_AnimAddUnit(AM1_UnitBallCreate());
+  /*for (i = 0; i < 100; i++)
+    AM1_AnimAddUnit(AM1_UnitBallCreate()); */
   AM1_AnimAddUnit(AM1_UnitModelCreate());
   //AM1_AnimAddUnit(AM1_UnitControlCreate());
 

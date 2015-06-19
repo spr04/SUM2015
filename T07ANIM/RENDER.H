@@ -53,6 +53,60 @@ VOID AM1_ShaderFree( UINT PrgId );
  * Работа с примитивами
  ***/
 
+/* Тип задания материала поверхности */
+typedef struct tagam1MATERIAL
+{
+  /* Имя материала */
+  CHAR Name[300];
+
+  /* Коэффициенты отражения */
+  VEC Ka, Kd, Ks;
+  FLT Kp; /* Степень "бликовости" */
+
+  /* Коэффициент прозрачности */
+  FLT Kt;
+
+  /* Текстура поверхности */
+  INT TexId;
+} am1MATERIAL;
+
+
+/* Глобальная таблица материалов */
+#define AM1_MATERIAL_MAX 300
+extern INT AM1_MtlLibSize;
+extern am1MATERIAL AM1_MtlLib[AM1_MATERIAL_MAX];
+
+/* Функция добавления материала в библиотеку.
+ * АРГУМЕНТЫ:
+ *   - структура с памаметрами материала:
+ *       am1MATERIAL *Mtl;
+ * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
+ *   (INT) порядковый номер добавленного материала (0 при ошибке).
+ */
+INT AM1_MtlAdd( am1MATERIAL *Mtl );
+
+/* Функция поиска материала по имени.
+ * АРГУМЕНТЫ:
+ *   - имя материала:
+ *       CHAR *Name;
+ * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
+ *   (INT) порядковый номер найденного материала (0 при ошибке).
+ */
+INT AM1_MtlFind( CHAR *Name );
+
+/* Функция загрузки материала из файла (*.MTL).
+ * АРГУМЕНТЫ:
+ *   - имя файла материала:
+ *       CHAR *FileName;
+ * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
+ *   (INT) количество загруженных материалов.
+ */
+INT AM1_MtlLoad( CHAR *FileName );
+
+/***
+ * Работа с примитивами
+ ***/
+
 /* Виды примитивов */
 typedef enum tagam1PRIM_TYPE
 {
@@ -67,7 +121,8 @@ typedef struct tagam1PRIM
   INT
     VA,          /* массив вершин */
     VBuf, IBuf,  /* буфера вершин и индексов */
-    NumOfI;      /* количество индексов для вывода примитива */
+    NumOfI,      /* количество индексов для вывода примитива */
+    MtlNo;       /* номер материала из библиотеки */
 } am1PRIM;
 
 /* Тип хранения текстурных координат */
@@ -143,7 +198,7 @@ VOID AM1_PrimDraw( am1PRIM *Prim );
  * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
  *   (BOOL) TRUE при успехе, иначе FALSE.
  */
-BOOL AM1_PrimCreatePlane( am1PRIM *Prim, VEC Du, VEC Dv, INT N, INT M );
+BOOL AM1_PrimCreatePlane( am1PRIM *Prim,VEC Loc, VEC Du, VEC Dv, INT N, INT M );
 
 /* Функция создания примитива сфера.
  * АРГУМЕНТЫ:
@@ -159,6 +214,8 @@ BOOL AM1_PrimCreatePlane( am1PRIM *Prim, VEC Du, VEC Dv, INT N, INT M );
  *   (BOOL) TRUE при успехе, иначе FALSE.
  */
 BOOL AM1_PrimCreateSphere( am1PRIM *Prim, VEC C, FLT R, INT N, INT M );
+
+BOOL AM1_PrimCreateHeightField( am1PRIM *Prim, VEC Loc, VEC Du, VEC Dv, DBL Scale, CHAR *FileName );
 
 /* Функция загрузки геометрического объекта.
  * АРГУМЕНТЫ:

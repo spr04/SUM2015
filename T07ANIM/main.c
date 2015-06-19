@@ -76,6 +76,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   UpdateWindow(hWnd);
 
   /*** Добавление объектов ***/
+  AM1_AnimAddUnit(AM1_UnitSeaCreate());
   AM1_AnimAddUnit(AM1_UnitModelCreate());
   AM1_AnimAddUnit(AM1_UnitControlCreate());
 

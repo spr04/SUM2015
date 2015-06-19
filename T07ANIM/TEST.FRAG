@@ -40,7 +40,7 @@ uniform sampler2D DrawTexture;
 /* Функция вычисления освещенности */
 vec4 Shade( vec3 P, vec3 N )
 {
-  float a = 0.5;
+  float a = 0.8;
   vec3 color = vec3(0, 0, 0);
   vec3 L = normalize(vec3(1, 1, 1));
   vec3 V = -vec3(-MatrView[3][0], -MatrView[3][1], -MatrView[3][2]);
@@ -51,17 +51,17 @@ vec4 Shade( vec3 P, vec3 N )
   N = faceforward(N, V, N);
   N = normalize(N);
 
- 
+  
   vec3
-    Ka = vec3(1, 0, 0),
+    Ka = vec3(0.3, 0.1, 0.1),
     Kd = vec3(0.4, 0.4, 0.4),
     Ks = vec3(2, 0.9, 0.5);
-  float Kp = 40;   
+  float Kp = 40;      
+    
    
-  
 
   // рассеянный (ambient)
-  color = Ka ;
+  color = Ka * 1;
 
   // диффузное отражение
   float nl = dot(N, L); 
@@ -82,15 +82,15 @@ vec4 Shade( vec3 P, vec3 N )
   vec3 R = reflect(V, N);
   float rl = dot(R, L); 
   if (rl > 0)
-    color += Ks * 2 * pow(rl, Kp);
+    color += Ks * 3 * pow(rl, Kp);
 
-  return vec4(0.5 * color, (Kt * a));
+  return vec4(0.6 * color, (Kt * a));
 }
 
 void main( void )
 {
-  /*/ туман
-  vec4 pos = MatrView * vec4(DrawPosition, 1);
+  // туман
+ vec4 pos = MatrView * vec4(DrawPosition, 1);
   float d = -pos.z, f, start = 10, end = 18;
 
   if (d < start)
@@ -100,9 +100,9 @@ void main( void )
   else
     f = (d - end) / (start - end);
  
-  vec4 fcol = vec4(0.3, 0.5, 0.7, 1);
-  */
-  OutColor = DrawColor * Shade(DrawPosition.xyz, DrawNormal); /* f + fcol * (1 - f);*/
-  //OutColor = vec4(1, 0, 0, 1);
+  vec4 fcol = vec4(0.3, 0.5, 0.5, 1);
+  
+  OutColor = DrawColor * Shade(DrawPosition.xyz, DrawNormal) /* f + fcol * (1 - f)*/;
+//  OutColor = vec4(1, 1, 0, 1);                             
 }
  

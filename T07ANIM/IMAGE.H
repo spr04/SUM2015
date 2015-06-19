@@ -16,6 +16,7 @@ typedef struct
   INT W, H;    /* Image size */
   HBITMAP hBm; /* Image handle */
   HDC hDC;     /* Image bitmap device context for drawing */
+  DWORD *Bits; /* Image pixel colors */
 } IMAGE;
 
 /* Load image function.
@@ -49,5 +50,6 @@ VOID ImageFree( IMAGE *Img );
 DWORD ImageGetP( IMAGE *Img, INT X, INT Y );
 
 #endif /* __IMAGE_H_ */
+
 
 /* END OF 'IMAGE.H' FILE */

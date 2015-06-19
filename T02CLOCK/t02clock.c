@@ -93,7 +93,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 
 /* Стрелки часов двигаются и рисуются */
-/*VOID DrawArrow(  HDC hDC, INT X1, INT Y1, INT Len, DOUBLE Angle )
+VOID DrawArrow(  HDC hDC, INT X1, INT Y1, INT Len, DOUBLE Angle )
 {
   DOUBLE si = sin(Angle * PI / 180), co = cos(Angle * PI / 180);
   MoveToEx(hDC, X1, Y1, NULL);
@@ -161,8 +161,8 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     cs = (CREATESTRUCT *)lParam;
     SetTimer(hWnd, 111, 50, NULL);
 
-    /*hBmLogo = LoadImage(NULL, "clock.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-    GetObject(hBmLogo, sizeof(bm), &bm);*/
+    hBmLogo = LoadImage(NULL, "clock.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+    GetObject(hBmLogo, sizeof(bm), &bm);
 
     /* создаем контекст в памяти */
     hDC = GetDC(hWnd);
@@ -197,8 +197,8 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     SetDCBrushColor(hMemDC, RGB(255, 225, 225));
     Rectangle(hMemDC, 0, 0, w + 1, h + 1);
 
-    /*StretchBlt(hMemDC, 0, 0, w, h - 100,
-      hMemDCLogo, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);*/
+    StretchBlt(hMemDC, 0, 0, w, h - 100,
+      hMemDCLogo, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
 
     GetLocalTime(&st);
     
@@ -230,9 +230,9 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
 
     SelectObject(hMemDC, GetStockObject(DC_PEN));
     SelectObject(hMemDC, GetStockObject(DC_BRUSH));
-    DrawHand(hMemDC, w / 2, h / 2 - 50, 200, 30, (st.wSecond * 6) * PI / 180 );
-    /*DrawArrow(hMemDC, w / 2, h / 2 - 50, 200, st.wMinute * 6);
-    DrawArrow(hMemDC, w / 2, h / 2 - 50, 120, (st.wHour % 12) * 30); */
+  //  DrawHand(hMemDC, w / 2, h / 2 - 50, 200, 30, (st.wSecond * 6) * PI / 180 );
+    DrawArrow(hMemDC, w / 2, h / 2 - 50, 200, (st.wMinute % 60) * 6);
+    DrawArrow(hMemDC, w / 2, h / 2 - 50, 120, (st.wHour % 12) * 30); 
     
 
     InvalidateRect(hWnd, NULL, TRUE);

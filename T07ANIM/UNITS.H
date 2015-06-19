@@ -30,6 +30,8 @@ am1UNIT * AM1_UnitControlCreate( VOID );
  */
 am1UNIT * AM1_UnitModelCreate( VOID );
 
+am1UNIT * AM1_UnitSeaCreate( VOID );
+
 #endif /* __UNITS_H_ */
 
 /* END OF 'UNITS.H' FILE */

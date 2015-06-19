@@ -1,4 +1,4 @@
-      * тип для матрицы - массив в структуре */
+/* тип для матрицы - массив в структуре */
 typedef struct tagMATR
 {
   DBL A[4][4];
@@ -298,48 +298,76 @@ __inline VEC VectorTransform( VEC V, MATR M )
 
 /* для нормалей: *
 MATR Q = MatrTranspose(MatrInverse(M));
-N1 = VectorTransform(N, Q); */
+N1 = VectorTransform(N, Q);*/ 
 
-__inline VEC VecRotateZ( VEC V, DBL AngleInDegree )
+__inline MATR MatrRotateX( DBL AngleInDegree )
 {
-  DBL sine, cosine, tmp;
-
-  __asm {
-    /* FST(0) Angle (from degree to radian) */
-    fld  AngleInDegree
-    fmul MultiplierDegree2Radian
-    
-    /* FST(0) - cos, FST(1) - sin */
-    fsincos
-    fstp cosine /* cos -> cosine */
-    fstp sine   /* sin -> sine */
-  }
-  tmp = V.X * cosine - V.Y * sine;
-  V.Y = V.X * sine + V.Y * cosine;
-  V.X = tmp;
-  return V;
-} /* End of 'VecRotateZ' function */
-
-__inline MATR MatrSetRotateZ( DBL AngleInDegree )
-{
-  MATR M = MatrIdentity();
   DBL sine, cosine;
+  MATR m = VG4_UNIT_MATR;
 
   __asm {
     /* FST(0) Angle (from degree to radian) */
     fld  AngleInDegree
-    fmul MultiplierDegree2Radian
-    
+    fmul VG4_MultiplierDegree2Radian
+
     /* FST(0) - cos, FST(1) - sin */
     fsincos
+
     fstp cosine /* cos -> cosine */
     fstp sine   /* sin -> sine */
   }
-  M.A[0][0] =  M.A[1][1] = cosine;
-  M.A[0][1] = sine;
-  M.A[1][0] = -sine;
-  return M;
-}
+  m.A[1][1] = cosine;
+  m.A[2][2] = cosine;
+  m.A[1][2] = sine;
+  m.A[2][1] = -sine;
+  return m;
+} /* End of 'MatrRotateX' function */
+
+__inline MATR MatrRotateY( DBL AngleInDegree )
+{
+  DBL sine, cosine;
+  MATR m = VG4_UNIT_MATR;
+
+  __asm {
+    /* FST(0) Angle (from degree to radian) */
+    fld  AngleInDegree
+    fmul VG4_MultiplierDegree2Radian
+
+    /* FST(0) - cos, FST(1) - sin */
+    fsincos
+
+    fstp cosine /* cos -> cosine */
+    fstp sine   /* sin -> sine */
+  }
+  m.A[0][0] = cosine;
+  m.A[2][2] = cosine;
+  m.A[2][0] = sine;
+  m.A[0][2] = -sine;
+  return m;
+} /* End of 'MatrRotateY' function */
+
+__inline MATR MatrRotateZ( DBL AngleInDegree )
+{
+  DBL sine, cosine;
+  MATR m = VG4_UNIT_MATR;
+
+  __asm {
+    /* FST(0) Angle (from degree to radian) */
+    fld  AngleInDegree
+    fmul VG4_MultiplierDegree2Radian
+
+    /* FST(0) - cos, FST(1) - sin */
+    fsincos
+
+    fstp cosine /* cos -> cosine */
+    fstp sine   /* sin -> sine */
+  }
+  m.A[0][0] = cosine;
+  m.A[1][1] = cosine;
+  m.A[0][1] = sine;
+  m.A[1][0] = -sine;
+  return m;
+} /* End of 'MatrRotateZ' function */
 
 __inline MATR MatrSetRotate( DBL AngleInDegree )
 {

@@ -69,14 +69,19 @@ static VOID AM1_AnimUnitResponse( am1UNIT_COW *Uni, am1ANIM *Ani )
  */
 static VOID AM1_AnimUnitRender( am1UNIT_COW *Uni, am1ANIM *Ani )
 {
+  INT i;
   AM1_RndMatrView = MatrView(VecSet(30, 30, 30),
                              VecSet(0, 0, 0),
                              VecSet(0, 1, 0)); 
+  for (i = 0; i < 8; i++)
+  {
   AM1_RndMatrWorld = 
     MatrMulMatr(MatrMulMatr(MatrMulMatr(
-    MatrTranslate(Ani->JX * 59, Ani-> JY * 88, 0), MatrScale(0.1, 0.1, 0.1)),
-    MatrRotateY(Ani->Time * 30 + Ani-> JR * 180)),
-    MatrTranslate(0, 0, 100 * Ani->JZ));
+        MatrTranslate(Ani->JX * 59, Ani->JY * 88, 0),
+        MatrScale(0.1, 0.1, 0.1)),
+        MatrRotateY(30 * Ani->Time + Ani->JR * 180)),
+        MatrTranslate((i - 2) * 2, 0, 100 * Ani->JZ));
+  }
   AM1_RndGObjDraw(&Uni->Model);
 } /* End of 'am1_AnimUnitRender' function */
 

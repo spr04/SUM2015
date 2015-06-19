@@ -4,6 +4,7 @@
  * LAST UPDATE: 05.06.2015
  */
 
+
 #include <string.h>
 
 #include "image.h"
@@ -19,27 +20,47 @@
  */
 BOOL ImageLoad( IMAGE *Img, CHAR *FileName )
 {
-  HDC hDC;
+  HDC hDC, hMemDC;
   BITMAP bm;
+  HBITMAP hBm;
+  BITMAPINFOHEADER bih = {0};
 
   memset(Img, 0, sizeof(IMAGE));
 
   /* Load image from file */
-  Img->hBm = LoadImage(NULL, FileName, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-  if (Img->hBm == NULL)
+  hBm = LoadImage(NULL, FileName, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+  if (hBm == NULL)
     return FALSE;
 
   /* Create compatible context and select image into one */
   hDC = GetDC(NULL);
   Img->hDC = CreateCompatibleDC(hDC);
+  hMemDC = CreateCompatibleDC(hDC);
   ReleaseDC(NULL, hDC);
-
-  SelectObject(Img->hDC, Img->hBm);
+  SelectObject(hMemDC, hBm);
 
   /* Obtain image size */
-  GetObject(Img->hBm, sizeof(BITMAP), &bm);
+  GetObject(hBm, sizeof(BITMAP), &bm);
   Img->W = bm.bmWidth;
   Img->H = bm.bmHeight;
+
+  /* строим DIB - device-independed-bitmap секция */
+  bih.biSize = sizeof(BITMAPINFOHEADER);
+  bih.biWidth = bm.bmWidth;
+  bih.biHeight = bm.bmHeight;
+  bih.biBitCount = 32;
+  bih.biCompression = BI_RGB;
+  bih.biPlanes = 1;
+  bih.biSizeImage = bm.bmWidth * bm.bmHeight * 4;
+
+  Img->hBm = CreateDIBSection(NULL, (BITMAPINFO *)&bih, DIB_RGB_COLORS, &Img->Bits, NULL, 0);
+  SelectObject(Img->hDC, Img->hBm);
+
+  /* отображаем в DIB картинку */
+  BitBlt(Img->hDC, 0, 0, bm.bmWidth, bm.bmHeight, hMemDC, 0, 0, SRCCOPY);
+
+  DeleteDC(hMemDC);
+  DeleteObject(hBm);
   return TRUE;
 } /* End of 'ImageLoad' function */
 
@@ -72,7 +93,11 @@ DWORD ImageGetP( IMAGE *Img, INT X, INT Y )
   if (Img->hBm == NULL)
     return 0;
 
-  return GetPixel(Img->hDC, X, Y);
+  if (X < 0 || Y < 0 || X >= Img->W || Y >= Img->H)
+    return 0;
+
+  return Img->Bits[Y * Img->W + X];
 } /* End of 'ImageGetP' function */
+
 
 /* END OF 'IMAGE.H' FILE */

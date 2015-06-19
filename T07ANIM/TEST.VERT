@@ -36,9 +36,9 @@ void main( void )
     vec4(0,  0, 0, 1)
   );        
  // gl_Position = MatrWVP * M * vec4((InPosition) * 0.4, 1);
-  //gl_Position = MatrWVP  * vec4((InPosition) * 0.4, 1);
+ // gl_Position = MatrWVP  * vec4((InPosition) * 0.4, 1);
 
-  gl_Position = MatrWVP * vec4(InPosition / 2 + vec3(0,  0.1 * sin(Time * 4 + 4 * InPosition.y) * cos(Time +  0.05 * InPosition.z), 1), 1);
+  gl_Position = MatrWVP * vec4(InPosition + vec3(0,  0.8 * sin(Time * 4 + 4 * InPosition.y) * cos(Time +  0.05 * InPosition.z), 1), 1);
   DrawNormal = mat3(MatrWInverse) * InNormal;
 //  DrawPosition = vec3(sin(Time + InPosition.x) * cos(Time + InPosition.z) * 0.3, 0);
 
